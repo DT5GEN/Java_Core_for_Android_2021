@@ -52,13 +52,10 @@ public class Functions extends HomeWorkApp {
 
 
     protected static boolean checkYears(int year) {
-        if (year % 4 == 0 &&  year % 100 != 0 ) {
+        if (year % 4 == 0 &&  year % 100 != 0 || year % 400 == 0 ) {
             System.out.print("Указанный в методе Год високосный ");
             return true;
-        } else if (year % 400 == 0) {
-            System.out.print("Указанный в методе Год високосный ");
-            return true;
-        } else {
+        }  else {
             System.out.print("Указанный в методе Год не високосный ");
             return false;
         }
