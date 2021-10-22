@@ -17,7 +17,7 @@ public class HomeWorkApp {
         System.out.println("\n  Задание 4 \n");
         Functions.printString("Такой пример вот", 5);
         System.out.println("\n  Задание 5 \n");
-        System.out.println(" - " + Functions.checkYears(400));
+        System.out.println(" - " + Functions.checkYears(2024));
 
     }
 }
