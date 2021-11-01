@@ -1,15 +1,13 @@
 package HomeWork04;
 
-
-import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.util.Random;
 import java.util.Scanner;
 
 
 public class TicTacToeRetro {
 
-    public static final int FIELD_SIZE = 3;
+    public static final int FIELD_SIZE = 52;
+    public static final int WIN_LINE = 3;
     public static final char[][] FIELD = new char[FIELD_SIZE][FIELD_SIZE];
     public static int turnsCount;
 
@@ -19,20 +17,34 @@ public class TicTacToeRetro {
     public static final String GAG_SYMBOL = "♥";
     public static final String FIELD_SPACE = "  ";
 
-    private static final int STATE_DROW = 0;
-    private static final int STATE_WIN_HUMAN = 1;
-    private static final int STATE_WIN_AI = 2;
 
     private static final Scanner in = new Scanner(System.in);
-    public static final Random RANDOM = new Random();
+    public static final Random random = new Random();
+
+    public static  int lastX;
+    public static  int lastY;
 
     private static boolean isGameOver;
     private int stateGameOver;
 
 
     public static void gameLauncher() {
+        do {
+            System.out.println("\n\nИгра начинается!");
+            init();
         renderField();
+            playGame();
+
+        } while (isContinueGame());
+        endGame();
+
     }
+
+    private static void init() {
+        initField();
+        turnsCount = 0;
+    }
+
 
     public static void initField() {
         for (int i = 0; i < FIELD_SIZE; i++) {
@@ -45,7 +57,7 @@ public class TicTacToeRetro {
     public static void renderField() {
         printHeader();
         printBodyMap();
-        isGameOver = false;
+        turnsCount = 0;
 
     }
 
@@ -71,25 +83,45 @@ public class TicTacToeRetro {
         }
     }
 
-    private void setGameOver(int gameOverState) {
-        stateGameOver = gameOverState;
-        isGameOver = true;
-        renderField();
-    }
 
+    private static void playGame() {
+        while (true) {
+            turnHuman();
+            renderField();
+            if (checkEnd(HUMAN_DOT)) {
+                break;
+            }
 
-    private void showMessageGameOver () {
-
-        switch (stateGameOver) {
-            case STATE_DROW -> System.out.println("НИЧЬЯ");
-            case STATE_WIN_HUMAN -> System.out.println("Ты выиграл!");
-            case STATE_WIN_AI -> System.out.println("КОМП ПОБЕДИЛ!");
-            default -> throw new RuntimeException("Произошла какая-то ерунда " + stateGameOver);
+            turnAI();
+            renderField();
+            if (checkEnd(AI_DOT)) {
+                break;
+            }
         }
 
-
     }
 
+
+
+    private static void turnHuman() {
+        System.out.println("ХОД ЧЕЛОВЕКА");
+        int rowNumber, columnNumber;
+
+        while (true) {
+            rowNumber = getValidNumberFromUser() - 1;
+            columnNumber = getValidNumberFromUser() - 1;
+            if (isCellFree(rowNumber, columnNumber)) {
+                break;
+            } else {
+                System.out.println("\nВы выбрали занятую ячейку!");
+            }
+        }
+
+        FIELD[rowNumber][columnNumber] = HUMAN_DOT;
+        turnsCount++;
+        lastX = rowNumber;
+        lastY = columnNumber;
+    }
 
     private static int getValidNumberFromUser() {
         while (true) {
@@ -116,233 +148,158 @@ public class TicTacToeRetro {
         return FIELD[rowNumber][columnNumber] == EMPTY_DOT;
     }
 
-/*
 
-    private  void playGame() {
-
-
-
-        if (checkWin(HUMAN_DOT)) {
-            setGameOver(STATE_WIN_HUMAN);
-            return;
+    private static boolean checkEnd(char symbol) {
+        if (checkWinModUp(symbol)) {
+            if (symbol == HUMAN_DOT) {
+                System.out.println("\nУра!! Вы победили!");
+            } else  {
+                System.out.println("\nВосстание близко... ИИ победил");
+            }
+            return true;
+        }
+        if (checkDraw()) {
+            System.out.println("\nНичья!");
+            return true;
         }
 
-        if (isFullMap()){
-            setGameOver(STATE_DROW);
-            return;
-        }
-
-
-
-        if (isFullMap()){
-            setGameOver(STATE_DROW);
-            return;
-        }
-
-        renderField();
-
-
-        aiTurn();
-        renderField();
-
-        if (checkWin(AI_DOT)) {
-            setGameOver(STATE_WIN_AI);
-            return;
-        }
-
-        if (isFullMap()) {
-            setGameOver(STATE_DROW);
-            return;
-        }
-
-
+        return false;
     }
-*/
+
+ /*   private static boolean checkWin(char symbol) {
+        if (FIELD[0][0] == symbol && FIELD[0][1] == symbol && FIELD[0][2] == symbol) {
+            return true;
+        }
+        if (FIELD[1][0] == symbol && FIELD[1][1] == symbol && FIELD[1][2] == symbol) {
+            return true;
+        }
+        if (FIELD[2][0] == symbol && FIELD[2][1] == symbol && FIELD[2][2] == symbol) {
+            return true;
+        }
+
+        if (FIELD[0][0] == symbol && FIELD[1][0] == symbol && FIELD[2][0] == symbol) {
+            return true;
+        }
+        if (FIELD[0][1] == symbol && FIELD[1][1] == symbol && FIELD[2][1] == symbol) {
+            return true;
+        }
+        if (FIELD[0][2] == symbol && FIELD[1][2] == symbol && FIELD[2][2] == symbol) {
+            return true;
+        }
+
+        if (FIELD[0][0] == symbol && FIELD[1][1] == symbol && FIELD[2][2] == symbol) {
+            return true;
+        }
+        if (FIELD[0][2] == symbol && FIELD[1][1] == symbol && FIELD[2][0] == symbol) {
+            return true;
+        }
+
+        return false;
+    }*/
 
 
-    private static void turnHuman() {
-        System.out.println("ХОД ЧЕЛОВЕКА");
-        int rowNumber, columnNumber;
+    private static boolean checkWinModY(char symbol) {
+        int tempWinLine = 0;
 
-        while (true) {
-            rowNumber = getValidNumberFromUser() - 1;
-            columnNumber = getValidNumberFromUser() - 1;
-            if (isCellFree(rowNumber, columnNumber)) {
-                break;
+        for (int i = 0; i < WIN_LINE ; i++) {
+
+            if ( symbol == FIELD[i][lastX] ){
+                tempWinLine++;
+                if (tempWinLine == WIN_LINE)
+                    return true;
             } else {
-                System.out.println("\nВы выбрали занятую ячейку!");
+                tempWinLine=0;
             }
         }
-
-        FIELD[rowNumber][columnNumber] = HUMAN_DOT;
-        turnsCount++;
+return false;
     }
 
+    private static boolean checkWinModX(char symbol) {
+        int tempWinLine = 0;
 
+        for (int i = 0; i < WIN_LINE ; i++) {
 
-    public  boolean isValidCell(int x, int y) {
-        return x >= 0 && x < FIELD_SIZE && y >= 0 && y < FIELD_SIZE;
-    }
-
-    public  boolean isEmptyCell(int x, int y) {
-        return FIELD[y][x] == EMPTY_DOT;
-    }
-
-
-    public  void aiTurn() {
-        if (turnAIWinCell()){
-            return;
-        }
-        if (turnHumanWinCell()) {
-            return;
-        }
-        int x;
-        int y;
-        do {
-            x = RANDOM.nextInt(FIELD_SIZE);
-            y = RANDOM.nextInt(FIELD_SIZE);
-        } while (!isEmptyCell(x, y));
-        FIELD [y][x] = AI_DOT;
-    }
-
-
-
-    private  boolean turnAIWinCell() {
-        for (int i = 0; i < FIELD_SIZE; i++) {
-            for (int j = 0; j < FIELD_SIZE; j++) {
-                if(isEmptyCell(j,i)) {
-                    FIELD[i][j] = AI_DOT;
-                    if (checkWin(AI_DOT)) {
-                        return true;
-                    }
-                    FIELD[i][j] = EMPTY_DOT;
-                }
-
+            if ( symbol == FIELD[lastY][i] ){
+                tempWinLine++;
+                if (tempWinLine == WIN_LINE)
+                    return true;
+            } else {
+                tempWinLine=0;
             }
-
-        }
-        return false;
-    }
-
-    private  boolean turnHumanWinCell() {
-        for (int i = 0; i < FIELD_SIZE; i++) {
-            for (int j = 0; j < FIELD_SIZE; j++) {
-                if (isEmptyCell(j, i)) {
-                    FIELD[i][j] = HUMAN_DOT;
-                    if (checkWin(HUMAN_DOT)) {
-                        FIELD[i][j] = AI_DOT;
-                        return true;
-                    }
-                    FIELD[i][j] = EMPTY_DOT;
-                }
-
-            }
-
-        }
-        return false;
-    }
-
-    //проверка на победу
-
-
-
-    private boolean checkWin(int с) {
-        for (int i = 0; i < FIELD_SIZE; i++) {
-            for (int j = 0; j < FIELD_SIZE; j++) {
-                if (checkLine(i, j, 1, 0, FIELD_SIZE, с)) {
-                    return true; // проверка по оси Х
-                }
-                if (checkLine(i, j, 1, 1, FIELD_SIZE, с)) {
-                    return true; // проверка по диагонали Х У
-                }
-                if (checkLine(i, j, 0, 1, FIELD_SIZE, с)) {
-                    return true; // проверка по оси У
-                }
-                if (checkLine(i, j, 1, -1, FIELD_SIZE, с)) {
-                    return true; // проверка по оси Х -У
-                }
-            }
-
         }
         return false;
     }
 
 
+    private static boolean checkWinModUp(char symbol) {
+        int tempWinLine = 0;
 
-    // проверка линии
+        for (int i = 0; i < WIN_LINE ; i++) {
 
-    private  boolean checkLine(int x, int y, int vx, int vy, int len, int c) {
-        final int farX = x + (len -1) * vx;     // посчитаем конец проверяемой линии
-        final int farY = y + (len -1) * vy;
-        if (!isValidCell(farX, farY)) {
-            return false;                       // проверяем, не выходит ли вектор за пределы игрового поля?
-        }
-        for (int i = 0; i < len; i++) {         // проход по проверяемой линии
-            if (FIELD[y + i * vy][x + i * vx] != c) {
-                return false;                   // проверяем одинаковые ли символы в ячейках?
+            if ( symbol == FIELD[lastY+i][lastX-i] ){
+                tempWinLine++;
+                if (tempWinLine == WIN_LINE)
+                    return true;
+            } else {
+                tempWinLine=0;
             }
         }
-        return true;
+        return false;
     }
 
-    public  boolean isFullMap() {
+    private static void checkWinModDown(char symbol) {
+        int tempWinLine = 0;
+
+        for (int i = 0; i < WIN_LINE ; i++) {
+
+            if ( symbol == FIELD[i][lastX] ){
+                tempWinLine++;
+            } else {
+                tempWinLine=0;
+            }
+        }
+
+    }
+
+    private static boolean checkDraw() {
         for (int i = 0; i < FIELD_SIZE; i++) {
-            for (int j = 0; j < FIELD_SIZE; j++) {
+            for (int j = 0; j <FIELD_SIZE; j++) {
                 if (FIELD[i][j] == EMPTY_DOT) {
                     return false;
                 }
             }
         }
         return true;
-    }
-
-    private  void playGame() {
-
-
-            turnHuman();
-            renderField();
-        update();
-            }
-
-
-
-
-
-    private void update() {
-
-        if (checkWin(HUMAN_DOT)) {
-            setGameOver(STATE_WIN_HUMAN);
-            return;
-        }
-
-        if (isFullMap()){
-            setGameOver(STATE_DROW);
-            return;
-        }
-
-        if (isFullMap()){
-            setGameOver(STATE_DROW);
-            return;
-        }
-
-        renderField();
-
-            aiTurn();
-            renderField();
-
-            if (checkWin(AI_DOT)) {
-                setGameOver(STATE_WIN_AI);
-                return;
-            }
-
-            if (isFullMap()) {
-                setGameOver(STATE_DROW);
-                return;
-            }
-
-
 
     }
 
+
+    static void turnAI() {
+        System.out.println("ХОД ИИ");
+        int rowNumber, columnNumber;
+
+        do {
+            rowNumber = random.nextInt(FIELD_SIZE);
+            columnNumber = random.nextInt(FIELD_SIZE);
+        } while (!isCellFree(rowNumber, columnNumber));
+
+        FIELD[rowNumber][columnNumber] = AI_DOT;
+        turnsCount++;
+        lastX = rowNumber;
+        lastY = columnNumber;
+
+    }
+
+    private static boolean isContinueGame() {
+        System.out.println("Хотите продолжить? y\\n");
+        return switch (in.next()) {
+            case "y", "yes", "+", "да", "конечно" -> true;
+            default -> false;
+        };
+    }
+
+    private static void endGame() {
+        System.out.println("Спасибо за игру!");
+    }
 
 }
