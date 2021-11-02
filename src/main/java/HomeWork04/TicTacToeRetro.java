@@ -21,8 +21,8 @@ public class TicTacToeRetro {
     private static final Scanner in = new Scanner(System.in);
     public static final Random random = new Random();
 
-    public static  int lastX;
-    public static  int lastY;
+    public static int lastX;
+    public static int lastY;
 
     private static boolean isGameOver;
     private int stateGameOver;
@@ -32,7 +32,7 @@ public class TicTacToeRetro {
         do {
             System.out.println("\n\nИгра начинается!");
             init();
-        renderField();
+            renderField();
             playGame();
 
         } while (isContinueGame());
@@ -102,7 +102,6 @@ public class TicTacToeRetro {
     }
 
 
-
     private static void turnHuman() {
         System.out.println("ХОД ЧЕЛОВЕКА");
         int rowNumber, columnNumber;
@@ -150,10 +149,10 @@ public class TicTacToeRetro {
 
 
     private static boolean checkEnd(char symbol) {
-        if (checkWinModUp(symbol)) {
+        if (checkWinModDown(symbol)) {
             if (symbol == HUMAN_DOT) {
                 System.out.println("\nУра!! Вы победили!");
-            } else  {
+            } else {
                 System.out.println("\nВосстание близко... ИИ победил");
             }
             return true;
@@ -197,65 +196,93 @@ public class TicTacToeRetro {
         return false;
     }*/
 
-
+    // Проверка столбца
     private static boolean checkWinModY(char symbol) {
         int tempWinLine = 0;
 
-        for (int i = 0; i < WIN_LINE ; i++) {
+        for (int i = 0; i < WIN_LINE; i++) {
 
-            if ( symbol == FIELD[i][lastX] ){
+            if (symbol == FIELD[i][lastX]) {
                 tempWinLine++;
                 if (tempWinLine == WIN_LINE)
                     return true;
             } else {
-                tempWinLine=0;
+                tempWinLine = 0;
             }
         }
-return false;
+        return false;
     }
-
+// Голова не ссображает, как собрать в кучу проверку всех диагоналей
     private static boolean checkWinModX(char symbol) {
         int tempWinLine = 0;
 
-        for (int i = 0; i < WIN_LINE ; i++) {
+        for (int i = 0; i < WIN_LINE; i++) {
 
-            if ( symbol == FIELD[lastY][i] ){
-                tempWinLine++;
-                if (tempWinLine == WIN_LINE)
-                    return true;
-            } else {
-                tempWinLine=0;
+            if (lastX - lastY >= 0) {
+
+                if (symbol == FIELD[i + lastX - lastY][i]) {
+                    tempWinLine++;
+                    if (tempWinLine == WIN_LINE)
+                        return true;
+                } else {
+                    tempWinLine = 0;
+                }
+                if (lastX - lastY < 0) {
+                    if (symbol == FIELD[i][i + lastX - lastY]) {
+                        tempWinLine++;
+                        if (tempWinLine == WIN_LINE)
+                            return true;
+                    } else {
+                        tempWinLine = 0;
+                    }
+                }
             }
         }
+
+
         return false;
     }
 
 
-    private static boolean checkWinModUp(char symbol) {
+    private static boolean checkWinModDown(char symbol) {
         int tempWinLine = 0;
 
-        for (int i = 0; i < WIN_LINE ; i++) {
+        for (int i = 0; i < WIN_LINE; i++) {
 
-            if ( symbol == FIELD[lastY+i][lastX-i] ){
-                tempWinLine++;
-                if (tempWinLine == WIN_LINE)
-                    return true;
-            } else {
-                tempWinLine=0;
+            if (lastX - lastY >= 0) {
+
+                if (symbol == FIELD[i + lastX - lastY][i]) {
+                    tempWinLine++;
+                    if (tempWinLine == WIN_LINE)
+                        return true;
+                } else {
+                    tempWinLine = 0;
+                }
+                if (lastX - lastY < 0) {
+                    if (symbol == FIELD[i][i + lastX - lastY]) {
+                        tempWinLine++;
+                        if (tempWinLine == WIN_LINE)
+                            return true;
+                    } else {
+                        tempWinLine = 0;
+                    }
+                }
             }
         }
+
+
         return false;
     }
-
-    private static void checkWinModDown(char symbol) {
+    // Проверка строки
+    private static void checkWinModХ(char symbol) {
         int tempWinLine = 0;
 
-        for (int i = 0; i < WIN_LINE ; i++) {
+        for (int i = 0; i < WIN_LINE; i++) {
 
-            if ( symbol == FIELD[i][lastX] ){
+            if (symbol == FIELD[i][lastX]) {
                 tempWinLine++;
             } else {
-                tempWinLine=0;
+                tempWinLine = 0;
             }
         }
 
@@ -263,7 +290,7 @@ return false;
 
     private static boolean checkDraw() {
         for (int i = 0; i < FIELD_SIZE; i++) {
-            for (int j = 0; j <FIELD_SIZE; j++) {
+            for (int j = 0; j < FIELD_SIZE; j++) {
                 if (FIELD[i][j] == EMPTY_DOT) {
                     return false;
                 }
