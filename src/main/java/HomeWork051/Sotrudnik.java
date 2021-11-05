@@ -1,7 +1,7 @@
 package HomeWork051;
 
 
-public class Sotrudnik {
+public class Sotrudnik extends Main {
 
     public String name;
     public String level;
@@ -86,6 +86,8 @@ public class Sotrudnik {
 
         //   System.out.println(this);
     }
+
+
 
 
 
