@@ -1,7 +1,7 @@
 package lesson06singleLern;
 
 public class Cats extends Animal {
-    private  int swimDistance;
+      int swimDistance;
     String color;
 
     public Cats(String name, String color, int swimDistance) {
@@ -15,7 +15,7 @@ public class Cats extends Animal {
     }
 
     public void catInfo() {
-        System.out.println("Кот  имя: " + name + "\nцвет: " + color +  "может проплыть " + swimDistance+ " метров.");
+        System.out.println("Кот  имя: " + name + " цвет: " + color +  "  может проплыть " + swimDistance + " метров.");
     }
 
     void voice() {

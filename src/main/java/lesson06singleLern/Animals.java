@@ -46,7 +46,7 @@ package lesson06singleLern;
     class AnimalsApp {
         public static void main(String[] args) {
             Animal animal = new Animal();
-            Cats cat = new Cats();
+            Cats cat = new Cats("Пушок", "черный" ,0);
             Dog dog = new Dog();
             animal.voice();
             cat.voice();

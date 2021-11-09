@@ -77,14 +77,15 @@ public class Sotrudnik extends Main {
         // System.out.print("\t Игрок \t \t                        \t должность \t email     \t        телефон \t      зарплата \t возраст \t  \n");
         System.out.printf("\t %s \t %s \t %s \t %s \t %d \t %d \t  \n", name, level, mail, phone, zarplata, age);
 
+
     }
 
 
 
-    void pastuhInfo() {
-        System.out.printf("У игрока %s (%d lvl) %d очков и накоплено %d монет \n",name,level,phone,zarplata);
+    public void pastuhInfo() {
+        System.out.printf("У игрока %s (%d lvl) %d очков и накоплено %d монет \n",getName(),getLevel(),getPhone(),getZarplata());
 
-        //   System.out.println(this);
+
     }
 
 
