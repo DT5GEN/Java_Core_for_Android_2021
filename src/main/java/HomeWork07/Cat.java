@@ -16,8 +16,8 @@ public class Cat {
     }
 
     public void fullnessOfTheTank (Dish dish) {
-        int appetite = Math.max(MAX_FULLNESS_OF_THE_TANK - fullness - random.nextInt(5), 0);
-
+        fullness = Math.max(fullness - random.nextInt(4),0);
+        int appetite = MAX_FULLNESS_OF_THE_TANK - fullness;
         int foodCount = dish.getFoodCount();
         if (foodCount - appetite >= 0){
         dish.nyamNyamFood(appetite);

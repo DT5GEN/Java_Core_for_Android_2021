@@ -14,14 +14,14 @@ public class Main {
 
         while (true){
 
-            dish.addFoodCount(3);
+            dish.addFoodCount(5);
             for (Cat cat : cats) {
                 cat.fullnessOfTheTank(dish);
                 System.out.printf(" %s поел и  полнота желудка равна: %s \n", cat.getName(),cat.isFullness());
             }
 dish.printFoodInfo();
 
-            Thread.sleep(4330);
+            Thread.sleep(2330);
 
 
         }
